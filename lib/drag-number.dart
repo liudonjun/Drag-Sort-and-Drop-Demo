@@ -13,31 +13,16 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Item {
-  String name;
-  String imgSrc;
-
-  Item(this.name, this.imgSrc);
-}
-
 class DragAndDrop extends StatefulWidget {
   @override
   _DragAndDropState createState() => _DragAndDropState();
 }
 
 class _DragAndDropState extends State<DragAndDrop> {
-  List<Item> _leftItems = [
-    Item("卸货申请", 'discharge.png'),
-    Item("卸货签收", 'sign_for.png'),
-    Item("计量任务", 'measure.png'),
-  ];
-  List<Item> _rightItems = [
-    Item("盘点任务", 'inventory_task.png'),
-    Item("验货任务", 'inspection_task.png'),
-    Item("装车任务", 'loading_task.png'),
-  ];
+  List<dynamic> _leftItems = [1, 2, 3, 4];
+  List<dynamic> _rightItems = [5, 6, 7, 8];
 
-  Item? _draggedItem;
+  int? _draggedItem;
 
   @override
   Widget build(BuildContext context) {
@@ -61,33 +46,28 @@ class _DragAndDropState extends State<DragAndDrop> {
                         height: 100,
                         color: Colors.blue.withOpacity(0.5),
                         child: Center(
-                          child: Text('${item.name}',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.white)),
+                          child: Text('$item'),
                         ),
                       ),
                       childWhenDragging: Container(
-                        //拖拽后替换元素
                         width: 100,
                         height: 100,
                         color: Colors.blue.withOpacity(0.5),
-                        child: Image.asset('assets/images/${item.imgSrc}'),
                       ),
-                      child: DragTarget<Item>(
+                      child: DragTarget<int>(
                         onAccept: (data) {
                           // 处理排序 和新增删除逻辑
                           print('accept index $data');
-                          print('is: ${_leftItems.contains(data)}');
-                          if (_leftItems.contains(data)) {
+                          if (_leftItems.indexOf(data as int) == -1) {
+                            setState(() {
+                              _leftItems.insert(index, data);
+                              _rightItems.remove(data);
+                            });
+                          } else {
                             setState(() {
                               // final temp = widget._list[data];
                               _leftItems.remove(data);
                               _leftItems.insert(index, data);
-                            });
-                          } else {
-                            setState(() {
-                              _leftItems.insert(index, data);
-                              _rightItems.remove(data);
                             });
                           }
                         },
@@ -106,7 +86,7 @@ class _DragAndDropState extends State<DragAndDrop> {
                               height: 100,
                               color: Colors.red.withOpacity(0.5),
                               child: Center(
-                                child: Text('${item.name}'),
+                                child: Text('$item'),
                               ),
                             ),
                           );
@@ -128,20 +108,17 @@ class _DragAndDropState extends State<DragAndDrop> {
                       feedback: Container(
                         width: 100,
                         height: 100,
-                        color: Colors.blue.withOpacity(0.5),
+                        color: Colors.red.withOpacity(0.5),
                         child: Center(
-                          child: Text('${item.name}',
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.white)),
+                          child: Text('$item'),
                         ),
                       ),
                       childWhenDragging: Container(
-                          width: 100,
-                          height: 100,
-                          color: Colors.blue.withOpacity(0.5),
-                          child: Image.asset('assets/images/${item.imgSrc}')),
+                        width: 100,
+                        height: 100,
+                        color: Colors.blue.withOpacity(0.5),
+                      ),
                       onDragStarted: () {
-                        print('onDragStarted');
                         // setState(() {
                         //   _draggedIndex = index;
                         // });
@@ -152,21 +129,20 @@ class _DragAndDropState extends State<DragAndDrop> {
                         //   _draggedIndex = null;
                         // });
                       },
-                      child: DragTarget<Item>(
+                      child: DragTarget<int>(
                         onAccept: (data) {
                           // 处理排序 和新增删除逻辑
                           print('accept index $data');
-                          print('is: ${_rightItems.contains(data)}');
-                          if (_rightItems.contains(data)) {
+                          if (_rightItems.indexOf(data as int) == -1) {
+                            setState(() {
+                              _rightItems.insert(index, data);
+                              _leftItems.remove(data);
+                            });
+                          } else {
                             setState(() {
                               // final temp = widget._list[data];
                               _rightItems.remove(data);
                               _rightItems.insert(index, data);
-                            });
-                          } else {
-                            setState(() {
-                              _rightItems.insert(index, data);
-                              _leftItems.remove(data);
                             });
                           }
                         },
@@ -175,7 +151,7 @@ class _DragAndDropState extends State<DragAndDrop> {
                           return true;
                         },
                         onLeave: (data) {
-                          print('index $index , leave $data');
+                          // print('index $index , leave $data');
                         },
                         builder: (context, data, rejects) {
                           print('builder = $data,  rejects= $rejects');
@@ -185,7 +161,7 @@ class _DragAndDropState extends State<DragAndDrop> {
                               height: 100,
                               color: Colors.red.withOpacity(0.5),
                               child: Center(
-                                child: Text('${item.name}'),
+                                child: Text('$item'),
                               ),
                             ),
                           );
